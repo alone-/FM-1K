@@ -12,15 +12,22 @@
 
 #include "FMOscillator.h"
 
-FMVoice::FMVoice(AudioProcessor *processor, Oscillator **oscs, FMOscillator *fmOsc, int numOscs, float sampleRate) 
-    :BaseVoice(oscs, numOscs, sampleRate) {
+FMVoice::FMVoice(AudioProcessor *processor, std::vector<Oscillator*> *oscs, std::vector<FMOscillator*> *fmoscs, float sampleRate) 
+    :BaseVoice(oscs, sampleRate) {
     fmTablePos = 0;
-    this->fmOsc = fmOsc;
+    this->fmoscs = fmoscs;
 }
 
 void FMVoice::perSampleUpdate() {
    // float fmFreq = (voiceFreq + (voiceFreq * (modulation->get() * fmOsc->getValue((int)fmTablePos)))) / 2;
-    float fmFreq = voiceFreq + ((voiceFreq * (fmOsc->getModulation() * fmOsc->getValue((int)fmTablePos))) * fmOsc->getOffset());
+    float fmFreq = 0;
+    
+    for (int i = 0; i < fmoscs->size(); i++) {
+        fmFreq += voiceFreq + ((voiceFreq * (fmoscs->at(i)->getModulation() * fmoscs->at(i)->getValue((int)fmTablePos))) * fmoscs->at(i)->getOffset());
+    }
+    
+    fmFreq /= fmoscs->size();
+    
     tablePos += fmFreq;
     fmTablePos += voiceFreq;
             

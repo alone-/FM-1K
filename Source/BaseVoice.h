@@ -15,11 +15,12 @@
 class NoteList;
 class Oscillator;
 class WaveTableCollection;
+class Vector;
 
 class BaseVoice : public SynthesiserVoice {
     public:
         BaseVoice();
-        BaseVoice(Oscillator **oscs, int numOscs, float sampleRate);
+        BaseVoice(std::vector<Oscillator*>* oscs, float sampleRate);
         
         virtual bool canPlaySound(SynthesiserSound *sound);
         virtual void startNote (int midiNoteNumber, float velocity, SynthesiserSound* sound, int currentPitchWheelPosition);
@@ -30,8 +31,7 @@ class BaseVoice : public SynthesiserVoice {
     protected: 
         virtual void perSampleUpdate();
         
-        Oscillator **oscs;
-        int numOscs;
+        std::vector<Oscillator*> *oscs;
         
         float sampleRate;
         float tablePos; 

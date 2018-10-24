@@ -8,17 +8,17 @@
   ==============================================================================
 */
 
+#include <vector>
 #include "BaseVoice.h"
 #include "Oscillator.h"
 
 #define DEFAULT_SAMPLE_RATE (44100)
 
-BaseVoice::BaseVoice() : BaseVoice(nullptr, 0, DEFAULT_SAMPLE_RATE) { }
+BaseVoice::BaseVoice() : BaseVoice(nullptr, DEFAULT_SAMPLE_RATE) { }
 
-BaseVoice::BaseVoice(Oscillator **oscs, int numOscs, float sampleRate) : SynthesiserVoice() {
+BaseVoice::BaseVoice(std::vector<Oscillator*> *oscs, float sampleRate) : SynthesiserVoice() {
     this->oscs = oscs;
     this->sampleRate = sampleRate;
-    this->numOscs = numOscs;
     
     tablePos = 0;
     voiceFreq = 0;
@@ -35,7 +35,7 @@ void BaseVoice::startNote (int midiNoteNumber, float velocity, SynthesiserSound*
     //this basic implementation just uses the tuning of the first oscillator, since generally
     //all oscillators in a synth use the same scale. If you wish to have different oscillators use
     //different scales, it is up to you to determine which to use (or average the frequencies).
-    voiceFreq = oscs[0]->getFreq(midiNoteNumber);
+    voiceFreq = oscs->at(0)->getFreq(midiNoteNumber);
     tablePos = 0;
     volume = 1.0;
 }
@@ -58,12 +58,12 @@ void BaseVoice::renderNextBlock(AudioBuffer<float> &outputBuffer, int startSampl
         val = 0;
         
         //sum samples from each oscillator
-        for (int osc = 0; osc < numOscs; osc++) {
-            val += oscs[osc]->getValue((int)tablePos);
+        for (int osc = 0; osc < oscs->size(); osc++) {
+            val += oscs->at(osc)->getValue((int)tablePos);
         } 
             
         //divide by the number of oscs so no values exceed the min or max (-1, 1)
-        val /= numOscs;
+        val /= oscs->size();
         
         for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel) {
             outputBuffer.addSample(channel, startSample, val * volume);

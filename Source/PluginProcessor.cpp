@@ -8,12 +8,15 @@
   ==============================================================================
 */
 
+#include <vector>
+
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
 #include "VoiceFM.h"
 #include "FMOscillator.h"
 
+#define FMOSCILLATORS (2)
 #define OSCILLATORS (1)
 #define VOICES (8)
 
@@ -32,16 +35,22 @@ Fm1kAudioProcessor::Fm1kAudioProcessor()
 {
     synth.clearVoices();
 
-    Oscillator **oscs = new Oscillator*[OSCILLATORS];
-    FMOscillator *fmosc = new FMOscillator(this, 44100);
+    //vectors to hold all of our oscillators
+    std::vector<Oscillator*> *oscs = new std::vector<Oscillator*>;
+    std::vector<FMOscillator*> *fmoscs = new std::vector<FMOscillator*>;
     
-    for (int i = 0; i < OSCILLATORS; i++ ) {
-        oscs[i] = new Oscillator(this, 44100);
+    //add the FM oscillators
+    for (int i = 0; i < FMOSCILLATORS; i++) {
+        fmoscs->push_back(new FMOscillator(this, 44100));
     }
     
+    //add the oscillators
+    for (int i = 0; i < OSCILLATORS; i++ ) {
+        oscs->push_back(new Oscillator(this, 44100));
+    }
     
     for (int i = 0; i < VOICES; i++) {
-        synth.addVoice(new FMVoice(this, oscs, fmosc, OSCILLATORS, 44100));
+        synth.addVoice(new FMVoice(this, oscs, fmoscs, 44100));
     }
     
     synth.clearSounds();

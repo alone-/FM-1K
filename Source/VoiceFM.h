@@ -21,14 +21,15 @@
 #include "BaseVoice.h"
 
 class FMOscillator;
+class Vector;
 
 class FMVoice : public BaseVoice {
     public:
-        FMVoice(AudioProcessor *processor, Oscillator **oscs, FMOscillator *fmOsc, int numOscs, float sampleRate);
+        FMVoice(AudioProcessor *processor, std::vector<Oscillator*> *oscs, std::vector<FMOscillator*> *fmoscs, float sampleRate);
         
     protected:
         virtual void perSampleUpdate();
         
-        FMOscillator *fmOsc;
+        std::vector<FMOscillator*> *fmoscs;
         float fmTablePos;
 };
