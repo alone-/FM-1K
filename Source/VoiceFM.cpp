@@ -20,7 +20,7 @@ FMVoice::FMVoice(AudioProcessor *processor, Oscillator **oscs, FMOscillator *fmO
 
 void FMVoice::perSampleUpdate() {
    // float fmFreq = (voiceFreq + (voiceFreq * (modulation->get() * fmOsc->getValue((int)fmTablePos)))) / 2;
-    float fmFreq = (voiceFreq + (voiceFreq * (fmOsc->getModulation() * fmOsc->getValue((int)fmTablePos))));
+    float fmFreq = voiceFreq + ((voiceFreq * (fmOsc->getModulation() * fmOsc->getValue((int)fmTablePos))) * fmOsc->getOffset());
     tablePos += fmFreq;
     fmTablePos += voiceFreq;
             

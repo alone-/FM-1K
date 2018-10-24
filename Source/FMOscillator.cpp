@@ -15,7 +15,11 @@
 
 #define MIN_MODULATION (0.0)
 #define DEFAULT_MODULATION (0.5)
-#define MAX_MODULATION (8.0)
+#define MAX_MODULATION (32.0)
+
+#define DEFAULT_OFFSET (0)
+#define MIN_OFFSET (-2.0)
+#define MAX_OFFSET (2.0)
 
 FMOscillator::FMOscillator(juce::AudioProcessor *processor, float sampleRate) : Oscillator(processor, sampleRate) {
     static int fmOscNum;
@@ -29,9 +33,17 @@ FMOscillator::FMOscillator(juce::AudioProcessor *processor, float sampleRate) : 
     
     modulation = new AudioParameterFloat (label.str(), description.str(), MIN_MODULATION, MAX_MODULATION, DEFAULT_MODULATION);
     
+    std::stringstream offsetlabel;
+    label << "FM osc" << fmOscNum << "offset";
+    std::stringstream offsetdescription;
+    description << "FM Osc " << fmOscNum << " Offset";
+    
+    offset = new AudioParameterFloat (offsetlabel.str(), offsetdescription.str(), MIN_OFFSET, MAX_OFFSET, DEFAULT_OFFSET);
+    
     //add parameters to processor...
     if (processor != nullptr) {
         processor->addParameter(modulation);
+        processor->addParameter(offset);
     }
     
     fmOscNum++;
@@ -39,6 +51,10 @@ FMOscillator::FMOscillator(juce::AudioProcessor *processor, float sampleRate) : 
 
 FMOscillator::~FMOscillator() {
     delete modulation;
+}
+
+float FMOscillator::getOffset() {
+    return offset->get();
 }
 
 float FMOscillator::getModulation() {

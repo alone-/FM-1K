@@ -18,6 +18,8 @@ class FMOscillator : public Oscillator {
         virtual ~FMOscillator();
         
         float getModulation();
+        float getOffset();
     private:
         AudioParameterFloat* modulation;
+        AudioParameterFloat* offset;
 };
