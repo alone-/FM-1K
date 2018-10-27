@@ -18,8 +18,8 @@
 #define MAX_MODULATION (32.0)
 
 #define DEFAULT_OFFSET (0)
-#define MIN_OFFSET (-2.0)
-#define MAX_OFFSET (2.0)
+#define MIN_OFFSET (0.0)
+#define MAX_OFFSET (4.0)
 
 FMOscillator::FMOscillator(juce::AudioProcessor *processor, float sampleRate) : Oscillator(processor, sampleRate) {
     static int fmOscNum;
@@ -36,7 +36,7 @@ FMOscillator::FMOscillator(juce::AudioProcessor *processor, float sampleRate) : 
     std::stringstream offsetlabel;
     label << "FM osc" << fmOscNum << "offset";
     std::stringstream offsetdescription;
-    description << "FM Osc " << fmOscNum << " Offset";
+    offsetdescription << "FM Osc " << fmOscNum << " Offset";
     
     offset = new AudioParameterFloat (offsetlabel.str(), offsetdescription.str(), MIN_OFFSET, MAX_OFFSET, DEFAULT_OFFSET);
     
