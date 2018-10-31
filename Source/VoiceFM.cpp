@@ -19,11 +19,16 @@ FMVoice::FMVoice(AudioProcessor *processor, std::vector<Oscillator*> *oscs, std:
 }
 
 void FMVoice::perSampleUpdate() {
-   // float fmFreq = (voiceFreq + (voiceFreq * (modulation->get() * fmOsc->getValue((int)fmTablePos)))) / 2;
     float fmFreq = 0;
     
     for (int i = 0; i < fmoscs->size(); i++) {
-        fmFreq += voiceFreq + ((voiceFreq * (fmoscs->at(i)->getModulation() * fmoscs->at(i)->getValue((int)fmTablePos))) * fmoscs->at(i)->getOffset());
+        //this calculation works as follows:
+        //the frequency of each oscillator is the sum of three parts
+        //1. voiceFreq; the base oscillator frequency
+        //2. a modulation of the voiceFreq which modulated at the frequency of the current FM oscillator
+        //3. a frequency offset from the previous calculated FM sample
+        fmFreq += voiceFreq + ((voiceFreq * (fmoscs->at(i)->getModulation() * fmoscs->at(i)->getValue((int)fmTablePos))));
+        fmFreq += fmFreq * fmoscs->at(i)->getOffset();
     }
     
     fmFreq /= fmoscs->size();

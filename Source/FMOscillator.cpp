@@ -19,7 +19,7 @@
 
 #define DEFAULT_OFFSET (0)
 #define MIN_OFFSET (0.0)
-#define MAX_OFFSET (4.0)
+#define MAX_OFFSET (1.0)
 
 FMOscillator::FMOscillator(juce::AudioProcessor *processor, float sampleRate) : Oscillator(processor, sampleRate) {
     static int fmOscNum;
