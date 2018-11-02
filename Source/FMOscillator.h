@@ -19,7 +19,9 @@ class FMOscillator : public Oscillator {
         
         float getModulation();
         float getOffset();
+        float getValue(int tablePos);
     private:
+        AudioParameterFloat* level;
         AudioParameterFloat* modulation;
         AudioParameterFloat* offset;
 };
