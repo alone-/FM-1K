@@ -12,6 +12,7 @@
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 
+class ADSR;
 class NoteList;
 class Oscillator;
 class WaveTableCollection;
@@ -20,7 +21,7 @@ class Vector;
 class BaseVoice : public SynthesiserVoice {
     public:
         BaseVoice();
-        BaseVoice(std::vector<Oscillator*>* oscs, float sampleRate);
+        BaseVoice(ADSR *adsr, std::vector<Oscillator*>* oscs, float sampleRate);
         
         virtual bool canPlaySound(SynthesiserSound *sound);
         virtual void startNote (int midiNoteNumber, float velocity, SynthesiserSound* sound, int currentPitchWheelPosition);
@@ -32,9 +33,9 @@ class BaseVoice : public SynthesiserVoice {
         virtual void perSampleUpdate();
         
         std::vector<Oscillator*> *oscs;
+        ADSR *adsr;
         
         float sampleRate;
         float tablePos; 
-        float volume;
         float voiceFreq;
 };

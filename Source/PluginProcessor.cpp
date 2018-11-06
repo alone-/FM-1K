@@ -13,6 +13,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include "ADSR.h"
 #include "VoiceFM.h"
 #include "FMOscillator.h"
 
@@ -34,7 +35,8 @@ Fm1kAudioProcessor::Fm1kAudioProcessor()
 #endif
 {
     synth.clearVoices();
-
+    adsrParams = new ADSRParams(this, 44100);
+    
     //vectors to hold all of our oscillators
     std::vector<Oscillator*> *oscs = new std::vector<Oscillator*>;
     std::vector<FMOscillator*> *fmoscs = new std::vector<FMOscillator*>;
@@ -44,13 +46,13 @@ Fm1kAudioProcessor::Fm1kAudioProcessor()
         fmoscs->push_back(new FMOscillator(this, 44100));
     }
     
-    //add the oscillators
+    //add the oscillators`
     for (int i = 0; i < OSCILLATORS; i++ ) {
         oscs->push_back(new Oscillator(this, 44100));
     }
     
     for (int i = 0; i < VOICES; i++) {
-        synth.addVoice(new FMVoice(this, oscs, fmoscs, 44100));
+        synth.addVoice(new FMVoice(new ADSR(adsrParams), this, oscs, fmoscs, 44100));
     }
     
     synth.clearSounds();

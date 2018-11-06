@@ -25,7 +25,7 @@ class Vector;
 
 class FMVoice : public BaseVoice {
     public:
-        FMVoice(AudioProcessor *processor, std::vector<Oscillator*> *oscs, std::vector<FMOscillator*> *fmoscs, float sampleRate);
+        FMVoice(ADSR *adsr, AudioProcessor *processor, std::vector<Oscillator*> *oscs, std::vector<FMOscillator*> *fmoscs, float sampleRate);
         
     protected:
         virtual void perSampleUpdate();

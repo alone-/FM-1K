@@ -14,6 +14,8 @@
 #include "BaseSound.h"
 #include "BaseVoice.h"
 
+class ADSRParams;
+
 //==============================================================================
 /**
 */
@@ -60,6 +62,7 @@ public:
 private:
     //==============================================================================
     Synthesiser synth;
+    ADSRParams* adsrParams; //synth adsr
     BaseVoice *voice;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Fm1kAudioProcessor)

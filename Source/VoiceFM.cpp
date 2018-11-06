@@ -12,8 +12,8 @@
 
 #include "FMOscillator.h"
 
-FMVoice::FMVoice(AudioProcessor *processor, std::vector<Oscillator*> *oscs, std::vector<FMOscillator*> *fmoscs, float sampleRate) 
-    :BaseVoice(oscs, sampleRate) {
+FMVoice::FMVoice(ADSR *adsr, AudioProcessor *processor, std::vector<Oscillator*> *oscs, std::vector<FMOscillator*> *fmoscs, float sampleRate) 
+    :BaseVoice(adsr, oscs, sampleRate) {
     fmTablePos = 0;
     this->fmoscs = fmoscs;
 }

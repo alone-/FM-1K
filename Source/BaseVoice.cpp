@@ -9,20 +9,21 @@
 */
 
 #include <vector>
+#include "ADSR.h"
 #include "BaseVoice.h"
 #include "Oscillator.h"
 
 #define DEFAULT_SAMPLE_RATE (44100)
 
-BaseVoice::BaseVoice() : BaseVoice(nullptr, DEFAULT_SAMPLE_RATE) { }
+BaseVoice::BaseVoice() : BaseVoice(nullptr, nullptr, DEFAULT_SAMPLE_RATE) { }
 
-BaseVoice::BaseVoice(std::vector<Oscillator*> *oscs, float sampleRate) : SynthesiserVoice() {
+BaseVoice::BaseVoice(ADSR *adsr, std::vector<Oscillator*> *oscs, float sampleRate) : SynthesiserVoice() {
+    this->adsr = adsr;
     this->oscs = oscs;
     this->sampleRate = sampleRate;
     
     tablePos = 0;
     voiceFreq = 0;
-    volume = 0;
 }
 
 bool BaseVoice::canPlaySound(SynthesiserSound *sound) {
@@ -37,12 +38,12 @@ void BaseVoice::startNote (int midiNoteNumber, float velocity, SynthesiserSound*
     //different scales, it is up to you to determine which to use (or average the frequencies).
     voiceFreq = oscs->at(0)->getFreq(midiNoteNumber);
     tablePos = 0;
-    volume = 1.0;
+    adsr->start();
 }
 
 void BaseVoice::stopNote(float velocity, bool allowTailOff) {
     clearCurrentNote();
-    volume = 0;
+    adsr->stop();
 }
 
 void BaseVoice::pitchWheelMoved(int newPitchWheelValue) {
@@ -66,9 +67,10 @@ void BaseVoice::renderNextBlock(AudioBuffer<float> &outputBuffer, int startSampl
         val /= oscs->size();
         
         for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel) {
-            outputBuffer.addSample(channel, startSample, val * volume);
+            outputBuffer.addSample(channel, startSample, val * adsr->level());
         }
         
+        adsr->update();
         perSampleUpdate();
         
         ++startSample;
